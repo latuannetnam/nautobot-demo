@@ -1,6 +1,7 @@
 ---
 - name: "BACKUP DEVICE CONFIGURATIONS"
   hosts: "all"
+  # hosts: "cisco-3725"  # Target specific hostname
   gather_facts: false
   connection: "ansible.netcommon.network_cli"
 

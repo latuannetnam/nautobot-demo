@@ -1,0 +1,29 @@
+---
+
+- name: "DEPLOY DEVICE CONFIGURATIONS"
+  # hosts: "ios"
+  hosts: "cisco-3725"  # Target specific hostname
+  gather_facts: false
+  connection: "ansible.netcommon.network_cli"
+
+  vars:
+    ansible_password: "{{ lookup('env', 'NTC_NET_PASSWORD') }}"
+    ansible_user: "{{ lookup('env', 'NTC_NET_USERNAME') }}"  # Use the environment variable
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+    ansible_become: true
+    ansible_become_password: "{{ ansible_password }}"  # Enable password
+    # ansible_become_method: enable
+
+  tasks:
+    # - name: "EXIT CONFIG MODE"
+    #   cisco.ios.ios_command:
+    #     commands: "exit"
+
+    - name: "CONFIGURE L3 INTERFACES"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: "{{ config_context['interfaces'] }}"
+            ipv4:
+              - address: "{{ item['ip_addresses'][0]['address'] }}"
+        state: replaced
+      loop: "{{ interfaces | rejectattr('name', 'equalto', 'GigabitEthernet1') | selectattr('ip_addresses', 'ne', []) | list }}"
