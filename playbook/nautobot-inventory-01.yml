@@ -1,0 +1,6 @@
+---
+plugin: networktocode.nautobot.gql_inventory
+validate_certs: false
+query:
+  devices:
+    name:

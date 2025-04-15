@@ -1,0 +1,86 @@
+---
+- name: "SET UP NAUTOBOT WITH FOUNDATION DATA"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    nautobot_url: "{{ lookup('env', 'NAUTOBOT_URL') }}"
+    nautobot_token: "{{ lookup('env', 'NAUTOBOT_TOKEN') }}"
+
+  tasks:
+
+    - name: "ADD LOCATION TYPES"
+      networktocode.nautobot.location_type:
+        url: "{{ nautobot_url }}"
+        token: "{{ nautobot_token }}"
+        name: "{{ location_type['name'] }}"
+        description: "{{ location_type['description'] }}"
+        nestable: "{{ location_type['nestable'] }}"
+        content_types: "{{ location_type['content_types'] | default([]) }}"
+        parent: "{{ location_type['parent'] | default(omit) }}"
+        state: present
+        validate_certs: false
+      loop_control:
+        loop_var: location_type
+      loop:
+        - name: "Region"
+          nestable: true
+          description: "Top level Regions for NTC Network"
+          content_types: []
+        - name: "Colo"
+          nestable: false
+          description: "NTC Colo Facilities"
+          parent: "Region"
+          content_types:
+            - "dcim.device"
+            - "dcim.rack"
+            - "ipam.prefix"
+            - "ipam.vlan"
+
+    - name: "ADD LOCATIONS"
+      networktocode.nautobot.location:
+        url: "{{ nautobot_url }}"
+        token: "{{ nautobot_token }}"
+        name: "{{ location['name'] }}"
+        location_type: "{{ location['location_type'] }}"
+        parent_location: "{{ location['parent'] | default(omit) }}"
+        status: "{{ location['status'] }}"
+        state: present
+        validate_certs: false
+      loop_control:
+        loop_var: location
+      loop:
+        - name: "East Coast"
+          status: "Active"
+          location_type: "Region"
+        - name: "West Coast"
+          status: "Active"
+          location_type: "Region"
+        - name: "Central"
+          status: "Active"
+          location_type: "Region"
+        - name: "New York City"
+          status: "Active"
+          location_type: "Colo"
+          parent: "East Coast"
+        - name: "Jersey City"
+          status: "Active"
+          location_type: "Colo"
+          parent: "East Coast"
+        - name: "San Francisco"
+          status: "Active"
+          location_type: "Colo"
+          parent: "West Coast"
+        - name: "Los Angeles"
+          status: "Active"
+          location_type: "Colo"
+          parent: "West Coast"
+        - name: "Chicago"
+          status: "Active"
+          location_type: "Colo"
+          parent: "Central"
+        - name: "Dallas"
+          status: "Active"
+          location_type: "Colo"
+          parent: "Central"

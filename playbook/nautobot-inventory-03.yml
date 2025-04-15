@@ -1,0 +1,17 @@
+---
+plugin: networktocode.nautobot.gql_inventory
+validate_certs: false
+query:
+  devices:
+    name:
+    location:
+      name:
+    config_context:
+    interfaces:
+      name:
+      ip_addresses:
+        address:
+      mac_address:
+group_by:
+  - location.name
+  - platform.napalm_driver

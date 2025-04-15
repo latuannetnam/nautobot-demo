@@ -1,0 +1,15 @@
+- name: "GET DEVICES"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    NAUTOBOT_URL: "{{ lookup('env', 'NAUTOBOT_URL') }}"
+    NAUTOBOT_TOKEN: "{{ lookup('env', 'NAUTOBOT_TOKEN') }}"
+  tasks:
+  - name: "RETRIEVE DEVICES AND SET AS FACT"
+    ansible.builtin.set_fact:
+      nautobot_devices: "{{ query('networktocode.nautobot.lookup', 'devices', api_endpoint=NAUTOBOT_URL, token=NAUTOBOT_TOKEN, validate_certs=False) }}"
+  - name: "LOOP OVER DEVICES AND DEBUG NAME OF EACH DEVICE"
+    ansible.builtin.debug:
+      msg: "The name of the device is {{ item.value.name }}."
+    loop: "{{ nautobot_devices }}"
