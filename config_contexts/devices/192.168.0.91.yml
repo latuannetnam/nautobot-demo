@@ -1,0 +1,10 @@
+# Example config context for interface FastEthernet1/0 with an IP address
+interfaces:
+  - name: FastEthernet1/0
+    description: "Configured by config context"
+    enabled: false
+    shutdown: true
+    duplex: auto
+    speed: auto
+    ip_addresses:
+      - address: 192.168.1.1/24  # Replace with desired IP address
