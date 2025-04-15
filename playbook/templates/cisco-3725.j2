@@ -1,0 +1,27 @@
+{% for interface in interfaces %}
+interface {{ interface.name }}
+{% if interface.ip_address is defined %}
+ ip address {{ interface.ip_address }} {{ interface.subnet_mask }}
+{% else %}
+ no ip address
+{% endif %}
+ no ip route-cache
+{% if interface.shutdown | default(false) %}
+ shutdown
+{% endif %}
+{% if interface.speed is defined %}
+ speed {{ interface.speed }}
+{% endif %}
+{% if interface.duplex is defined %}
+ duplex {{ interface.duplex }}
+{% endif %}
+{% if interface.full_duplex | default(false) %}
+ full-duplex
+{% endif %}
+{% if interface.mop_disabled | default(false) %}
+ no mop enabled
+{% endif %}
+!
+{% endfor %}
+
+end
