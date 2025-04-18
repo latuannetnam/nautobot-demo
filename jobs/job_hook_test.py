@@ -7,7 +7,7 @@ class HelloWorldJobHook(JobHookReceiver):
     class Meta:
         name = "Hello World Job Hook"
 
-    def receive_job_hook(self, change, action, changed_obj):
-        self.logger.debug(f"Job hook received {change} {action} {changed_obj}", extra={"object": changed_obj})
+    def receive_job_hook(self, change, action):
+        self.logger.debug(f"Job hook received {change} {action}")
 
-register_jobs(HelloWorldJobHook)        
+register_jobs(HelloWorldJobHook)
