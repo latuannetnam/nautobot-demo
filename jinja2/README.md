@@ -1,0 +1,1 @@
+This folder contain Jinja2 template for devices
