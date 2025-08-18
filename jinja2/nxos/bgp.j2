@@ -1,0 +1,13 @@
+router bgp {{ config_context["bgp"]["asn"] }}
+  router-id {{ config_context["bgp"]["rid"] }}
+{% if config_context["bgp"]["log-neighbor-changes"] == true %}
+  log-neighbor-changes
+{% endif %}
+  address-family ipv4 unicast
+    redistribute direct route-map PERMIT_CONN_ROUTES
+{% for neighbor in config_context["bgp"]["neighbors"] %}
+  neighbor {{ neighbor["ip"] }}
+    remote-as {{ neighbor["remote-asn"] }}
+    address-family ipv4 unicast
+{% endfor %}
+
