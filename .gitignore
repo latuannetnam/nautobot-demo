@@ -3,3 +3,4 @@ network_backups
 *.log
 settings.json
 .lock
+__pycache__/
