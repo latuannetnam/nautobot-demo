@@ -1,8 +1,0 @@
-{% for server in config_context['ntp'] %}
-{% if server['prefer'] %}
-ntp server {{ server['ip'] }} prefer use-vrf default
-{% else %}
-ntp server {{ server['ip'] }} use-vrf default
-{% endif %}
-{% endfor %}
-
