@@ -6,7 +6,7 @@ service timestamps log datetime msec
 no service password-encryption
 {% endif %}
 !
-{% include './ios/hostname.j2' %}
+{% include './jinja2/ios/hostname.j2' %}
 !
 boot-start-marker
 boot-end-marker
@@ -39,7 +39,7 @@ ip domain name {{ config_context.get('domain_name') }}
 !
 multilink bundle-name authenticated
 !
-{% include './ios/local_user.j2' %}
+{% include './jinja2/ios/local_user.j2' %}
 archive
  log config
   logging enable
@@ -47,7 +47,7 @@ archive
 !
 ip ssh version {{ config_context.get('ssh_version', '2') }}
 !
-{% include './ios/interfaces.j2' %}
+{% include './jinja2/ios/interfaces.j2' %}
 {% if config_context.get('default_gateway') %}
 ip default-gateway {{ config_context.get('default_gateway') }}
 {% endif %}
@@ -60,9 +60,9 @@ ip http server
 no ip http secure-server
 {% endif %}
 !
-{% include './ios/snmp.j2' %}
+{% include './jinja2/ios/snmp.j2' %}
 !
 control-plane
 !
-{% include './ios/console_vty.j2' %}
+{% include './jinja2/ios/console_vty.j2' %}
 end
