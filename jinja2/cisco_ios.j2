@@ -1,19 +1,68 @@
 !
-!
-version 17.1
+version {{ config_context.version | default('12.4') }}
 service timestamps debug datetime msec
 service timestamps log datetime msec
-! Call-home is enabled by Smart-Licensing.
-service call-home
-platform qfp utilization monitor load 80
-platform punt-keepalive disable-kernel-core
-platform console serial
+{% if config_context.password_encryption == false %}
+no service password-encryption
+{% endif %}
 !
-{% include './jinja2/ios/hostname.j2' %}
+{% include './ios/hostname.j2' %}
 !
 boot-start-marker
 boot-end-marker
 !
+{% if config_context.enable_secret is defined %}
+enable secret {{ config_context.enable_secret }}
+{% endif %}
+{% if config_context.enable_password is defined %}
+enable password {{ config_context.enable_password }}
+{% endif %}
 !
-
+{% if config_context.aaa_new_model == false %}
+no aaa new-model
+{% else %}
+aaa new-model
+{% endif %}
+{% if config_context.memory_size is defined %}
+memory-size iomem {{ config_context.memory_size }}
+{% endif %}
+{% if config_context.ip_routing == false %}
+no ip routing
+{% endif %}
+{% if config_context.ip_cef == false %}
+no ip cef
+{% endif %}
+!
+{% if config_context.domain_name is defined %}
+ip domain name {{ config_context.domain_name }}
+{% endif %}
+!
+multilink bundle-name authenticated
+!
+{% include './ios/local_user.j2' %}
+archive
+ log config
+  logging enable
+  hidekeys
+!
+ip ssh version {{ config_context.ssh_version | default('2') }}
+!
+{% include './ios/interfaces.j2' %}
+{% if config_context.default_gateway is defined %}
+ip default-gateway {{ config_context.default_gateway }}
+{% endif %}
+ip forward-protocol nd
+!
+{% if config_context.http_server == true %}
+ip http server
+{% endif %}
+{% if config_context.http_secure_server == false %}
+no ip http secure-server
+{% endif %}
+!
+{% include './ios/snmp.j2' %}
+!
+control-plane
+!
+{% include './ios/console_vty.j2' %}
 end
