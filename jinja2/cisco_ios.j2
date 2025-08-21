@@ -1,8 +1,8 @@
 !
-version {{ config_context.version | default('12.4') }}
+version {{ config_context.get('version', '12.4') }}
 service timestamps debug datetime msec
 service timestamps log datetime msec
-{% if config_context.password_encryption == false %}
+{% if config_context.get('password_encryption') == false %}
 no service password-encryption
 {% endif %}
 !
@@ -11,30 +11,30 @@ no service password-encryption
 boot-start-marker
 boot-end-marker
 !
-{% if config_context.enable_secret is defined %}
-enable secret {{ config_context.enable_secret }}
+{% if config_context.get('enable_secret') %}
+enable secret {{ config_context.get('enable_secret') }}
 {% endif %}
-{% if config_context.enable_password is defined %}
-enable password {{ config_context.enable_password }}
+{% if config_context.get('enable_password') %}
+enable password {{ config_context.get('enable_password') }}
 {% endif %}
 !
-{% if config_context.aaa_new_model == false %}
+{% if config_context.get('aaa_new_model') == false %}
 no aaa new-model
 {% else %}
 aaa new-model
 {% endif %}
-{% if config_context.memory_size is defined %}
-memory-size iomem {{ config_context.memory_size }}
+{% if config_context.get('memory_size') %}
+memory-size iomem {{ config_context.get('memory_size') }}
 {% endif %}
-{% if config_context.ip_routing == false %}
+{% if config_context.get('ip_routing') == false %}
 no ip routing
 {% endif %}
-{% if config_context.ip_cef == false %}
+{% if config_context.get('ip_cef') == false %}
 no ip cef
 {% endif %}
 !
-{% if config_context.domain_name is defined %}
-ip domain name {{ config_context.domain_name }}
+{% if config_context.get('domain_name') %}
+ip domain name {{ config_context.get('domain_name') }}
 {% endif %}
 !
 multilink bundle-name authenticated
@@ -45,18 +45,18 @@ archive
   logging enable
   hidekeys
 !
-ip ssh version {{ config_context.ssh_version | default('2') }}
+ip ssh version {{ config_context.get('ssh_version', '2') }}
 !
 {% include './ios/interfaces.j2' %}
-{% if config_context.default_gateway is defined %}
-ip default-gateway {{ config_context.default_gateway }}
+{% if config_context.get('default_gateway') %}
+ip default-gateway {{ config_context.get('default_gateway') }}
 {% endif %}
 ip forward-protocol nd
 !
-{% if config_context.http_server == true %}
+{% if config_context.get('http_server') == true %}
 ip http server
 {% endif %}
-{% if config_context.http_secure_server == false %}
+{% if config_context.get('http_secure_server') == false %}
 no ip http secure-server
 {% endif %}
 !
